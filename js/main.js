@@ -1,130 +1,152 @@
-// 滚动到指定元素
-function scrollToElement(target, offset) {
-  var scroll_offset = $(target).offset();
-  $('body,html').animate({
-    scrollTop: scroll_offset.top + (offset || 0),
-    easing   : 'swing'
-  });
-}
+$(function () {
 
-// 防抖动函数
-function debounce(func, wait, immediate) {
-  var timeout;
-  return function() {
-    var context = this;
-    var args = arguments;
-    var later = function() {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-}
+	$('.post__main img').on('click', function () {
+		var $img = $(this);
 
-// 顶部菜单的监听事件
-function navbarScrollEvent() {
-  var navbar = $('#navbar');
-  if (navbar.offset().top > 0) {
-    navbar.addClass('navbar-custom');
-    navbar.removeClass('navbar-dark');
-  }
-  $(window).scroll(debounce(function() {
-    $('.scrolling-navbar')[navbar.offset().top > 50 ? 'addClass' : 'removeClass']('top-nav-collapse');
-    if (navbar.offset().top > 0) {
-      navbar.addClass('navbar-custom');
-      navbar.removeClass('navbar-dark');
-    } else {
-      navbar.addClass('navbar-dark');
-    }
-  }, 20));
-  $('#navbar-toggler-btn').on('click', function() {
-    $('.animated-icon').toggleClass('open');
-    $('#navbar').toggleClass('navbar-col-show');
-  });
-}
+		$.fancybox.open([{
+			src: $img.attr('src'),
+			type: 'image'
+		}]);
+	});
 
-// 头图视差的监听事件
-function parallaxEvent() {
-  var target = $('#background[parallax="true"]');
-  var parallax = function() {
-    var oVal = $(window).scrollTop() / 5;
-    var offset = parseInt($('#board').css('margin-top'), 0);
-    var max = 96 + offset;
-    if (oVal > max) {
-      oVal = max;
-    }
-    target.css({
-      transform          : 'translate3d(0,' + oVal + 'px,0)',
-      '-webkit-transform': 'translate3d(0,' + oVal + 'px,0)',
-      '-ms-transform'    : 'translate3d(0,' + oVal + 'px,0)',
-      '-o-transform'     : 'translate3d(0,' + oVal + 'px,0)'
-    });
+	$('[data-fancybox]').fancybox({
+		// closeClickOutside: false,
+		image: {
+			protect: true
+		}
+	});
 
-    var toc = $('#toc');
-    if (toc) {
-      $('#toc-ctn').css({
-        'padding-top': oVal + 'px'
-      });
-    }
-  };
-  if (target.length > 0) {
-    parallax();
-    $(window).scroll(parallax);
-  }
-}
+	// key bind
 
-// 向下滚动箭头的监听事件
-function scrollDownArrowEvent() {
-  $('.scroll-down-bar').on('click', function() {
-    scrollToElement('#board', -$('#navbar').height());
-  });
-}
+	// j  down
+	// k  top
+	// t  page top
+	// b  page bottom
 
-// 向顶部滚动箭头的监听事件
-function scrollTopArrowEvent() {
-  var topArrow = $('#scroll-top-button');
-  if (!topArrow) {
-    return;
-  }
-  var posDisplay = false;
-  var scrollDisplay = false;
-  // 位置
-  var setTopArrowPos = function() {
-    var boardRight = document.getElementById('board').getClientRects()[0].right;
-    var bodyWidth = document.body.offsetWidth;
-    var right = bodyWidth - boardRight;
-    posDisplay = right >= 50;
-    topArrow.css({
-      'bottom': posDisplay && scrollDisplay ? '20px' : '-60px',
-      'right' : right - 64 + 'px'
-    });
-  };
-  setTopArrowPos();
-  $(window).resize(setTopArrowPos);
-  // 显示
-  var headerHeight = $('#board').offset().top;
-  $(window).scroll(debounce(function() {
-    var scrollHeight = document.body.scrollTop + document.documentElement.scrollTop;
-    scrollDisplay = scrollHeight >= headerHeight;
-    topArrow.css({
-      'bottom': posDisplay && scrollDisplay ? '20px' : '-60px'
-    });
-  }, 20));
-  // 点击
-  topArrow.on('click', function() {
-    $('body,html').animate({
-      scrollTop: 0,
-      easing   : 'swing'
-    });
-  });
-}
+	// i  go index
+	var $body = $('html');
+	var unTriggerEles = [
+		'.veditor',
+		'.vnick',
+		'.vmail',
+		'.vlink',
+	];
 
-$(document).ready(function() {
-  navbarScrollEvent();
-  parallaxEvent();
-  scrollDownArrowEvent();
-  scrollTopArrowEvent();
+	var isKeydown = false;
+	$body.on('keydown', function (e) {
+		// console.log(e.which, 'key down', e.target);
+
+		// 有些 input 或者 textarea 不应该触发这些快捷键
+		var $tar = $(e.target);
+		var needTrigger = true;
+		for (var i = 0; i < unTriggerEles.length; i++) {
+			if ($tar.is(unTriggerEles[i])) {
+				needTrigger = false;
+				break;
+			}
+		}
+
+		if (!needTrigger) {
+			return;
+		}
+
+		switch (e.which) {
+			case 74: // j down
+				if (!isKeydown) {
+					isKeydown = true;
+					requestAnimationFrame(function animate() {
+						var curTop = window.scrollY;
+						window.scrollTo(0, curTop + 15);
+
+						if (isKeydown) {
+							requestAnimationFrame(animate);
+						}
+					});
+				}
+
+				break;
+
+			case 75: // k up
+				if (!isKeydown) {
+					isKeydown = true;
+					requestAnimationFrame(function animate() {
+						var curTop = window.scrollY;
+						window.scrollTo(0, curTop - 15);
+
+						if (isKeydown) {
+							requestAnimationFrame(animate);
+						}
+					});
+				}
+
+				break;
+
+			case 191: // shift + / = ? show help modal
+				break;
+
+				// 16 shift
+			case 84: // t
+				window.scrollToTop(1);
+				break;
+
+			case 66: // b
+				window.scrollToBottom();
+				break;
+
+			case 78: // n half
+				window.scrollPageDown(1);
+				break;
+
+			case 77: // m
+				window.scrollPageUp(1);
+				break;
+		}
+
+	});
+
+	$body.on('keyup', function (e) {
+		isKeydown = false;
+	});
+
+	// print hint
+
+	var comments = [
+		'',
+		'                    .::::.            快捷键：',
+		'                  .::::::::.            j：下移',
+		'                 :::::::::::            k：上移',
+		"             ..:::::::::::'             t：移到最顶",
+		"           '::::::::::::'               b：移到最底",
+		'             .::::::::::                n：下移很多',
+		"        '::::::::::::::..               m：上移很多",
+		'             ..::::::::::::.',
+		'           ``::::::::::::::::',
+		"            ::::``:::::::::'        .:::.",
+		"           ::::'   ':::::'       .::::::::.",
+		"         .::::'      ::::     .:::::::'::::.",
+		"        .:::'       :::::  .::::::::'  ':::::.",
+		"       .::'        :::::::::::::::'      ':::::.",
+		"      .::'        :::::::::::::::'          ':::.",
+		"  ...:::          :::::::::::::'              ``::.",
+		" ```` ':.         '::::::::::'                  ::::..",
+		"                    ':::::'                    ':'````..",
+		''
+	];
+
+	comments.forEach(function (item) {
+		console.log('%c' + item, 'color: #399c9c');
+	});
+
+	$('.btn-reward').on('click', function (e) {
+		e.preventDefault();
+
+		var $reward = $('.reward-wrapper');
+		$reward.slideToggle();
+	});
+
+	$('body').addClass('queue-in');
+	setTimeout(function() {
+		$('body').css({ opacity: 1}).removeClass('queue-in');
+	}, 500);
+
 });
