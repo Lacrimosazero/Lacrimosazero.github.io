@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: Lacrimosa
 subtitle: 'Lacrimosa'
 description: ''
 keywords:
@@ -93,7 +93,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: nexmoe
+theme: butterfly
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
