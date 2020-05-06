@@ -6,14 +6,16 @@
 #   xxx || 連結 || icon
 menu:
   主页: / || fa fa-home
-  归档: /archives/ || fa fa-archive
+  时间轴: /archives/ || fa fa-archive
   标签: /tags/ || fa fa-tags
   分类: /categories/ || fa fa-folder-open
-  友情链接: /link/ || fa fa-link
+  留言: /messageboard/ || fa fa-coffee
+  友链: /link/ || fa fa-link
   关于: /about/ || fa fa-heart
-  列表||fa fa-list:
+  娱乐||fa fa-list:
     - 音乐 || /music/ || fa fa-music
     - 电影 || /movies/ || fa fa-film
+    - 相册 || /photos/ || fa fa-photo
 
 # Favicon
 # ---------------
@@ -73,7 +75,7 @@ algolia_search:
 # Please see doc for more details: https://docs.jerryc.me/config.html#本地搜索
 # ---------------
 local_search:
-  enable: false
+  enable: true
   labels:
     input_placeholder: Search for Posts
     hits_empty: "We didn't find any results for the search: ${query}" # if there are no result
@@ -459,11 +461,11 @@ fireworks:
 
 # 點擊出現愛心
 click_heart:
-  enable: false
+  enable: true
 
 # 點擊出現文字，文字可自行修改
 ClickShowText:
-  enable: true
+  enable: false
   text:
     - 富强
     - 民主
