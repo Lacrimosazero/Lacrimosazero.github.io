@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Hello World</title>
-    <url>/2020/04/26/hello-world/</url>
+    <url>/2020/05/06/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
 <a id="more"></a>
 
@@ -24,6 +24,228 @@
       </categories>
       <tags>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>H5唤起APP进行分享</title>
+    <url>/2020/07/07/H5%E5%94%A4%E8%B5%B7APP%E8%BF%9B%E8%A1%8C%E5%88%86%E4%BA%AB/</url>
+    <content><![CDATA[<h1 id="分析实现方式"><a href="#分析实现方式" class="headerlink" title="分析实现方式"></a>分析实现方式</h1><p>要实现在H5唤起APP的主要采用</p>
+<ol>
+<li>URL Scheme | Intent | Universal Link（也称：深度链接）</li>
+<li>通过浏览器的内置native分享接口</li>
+</ol>
+<h2 id="URLScheme"><a href="#URLScheme" class="headerlink" title="URLScheme"></a>URLScheme</h2><p>我们来看一下 URL 的组成：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[scheme:][&#x2F;&#x2F;authority][path][?query][#fragment]</span><br></pre></td></tr></table></figure>
+
+<p>我们拿<code>https://www.baidu.com</code> 来举例，scheme 自然就是 <code>https</code>了。</p>
+<p>就像给服务器资源分配一个 URL，以便我们去访问它一样，我们同样也可以给手机APP分配一个特殊格式的 URL，用来访问这个APP或者这个APP中的某个功能(来实现通信)。APP得有一个标识，好让我们可以定位到它，它就是 URL 的 Scheme 部分。</p>
+<h2 id="常用APP的-URL-Scheme"><a href="#常用APP的-URL-Scheme" class="headerlink" title="常用APP的 URL Scheme"></a>常用APP的 URL Scheme</h2><table>
+<thead>
+<tr>
+<th align="center">AP P</th>
+<th align="center">微信</th>
+<th align="center">支付宝</th>
+<th align="center">淘宝</th>
+<th align="center">微博</th>
+<th align="center">QQ</th>
+<th align="center">知乎</th>
+<th align="center">短信</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">URL Scheme</td>
+<td align="center">weixin://</td>
+<td align="center">alipay://</td>
+<td align="center">taobao://</td>
+<td align="center">sinaweibo://</td>
+<td align="center">mqq://</td>
+<td align="center">zhihu://</td>
+<td align="center">sms://</td>
+</tr>
+</tbody></table>
+<h2 id="URL-Scheme-语法"><a href="#URL-Scheme-语法" class="headerlink" title="URL Scheme 语法"></a>URL Scheme 语法</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">     行为(应用的某个功能)    </span><br><span class="line">            |</span><br><span class="line">scheme:&#x2F;&#x2F;[path][?query]</span><br><span class="line">   |               |</span><br><span class="line">应用标识       功能需要的参数</span><br></pre></td></tr></table></figure>
+
+<h2 id="搜集到的常用Scheme"><a href="#搜集到的常用Scheme" class="headerlink" title="搜集到的常用Scheme"></a>搜集到的常用Scheme</h2><table>
+<thead>
+<tr>
+<th><strong>应用名称</strong></th>
+<th><strong>URL Scheme</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>微博</td>
+<td>weibo://</td>
+</tr>
+<tr>
+<td>QQ</td>
+<td>mqq://</td>
+</tr>
+<tr>
+<td>QQ群组</td>
+<td><a href="mqqapi://card/show_pslcard?src_type=internal&version=1&card_type=group&uin=">mqqapi://card/show_pslcard?src_type=internal&amp;version=1&amp;card_type=group&amp;uin=</a>{QQ群号}</td>
+</tr>
+<tr>
+<td>QQ联系人</td>
+<td><a href="mqqapi://card/show_pslcard?src_type=internal&version=1&uin=">mqqapi://card/show_pslcard?src_type=internal&amp;version=1&amp;uin=</a>{QQ号码}</td>
+</tr>
+<tr>
+<td>支付宝</td>
+<td>alipay://</td>
+</tr>
+<tr>
+<td>微信</td>
+<td>weixin://</td>
+</tr>
+<tr>
+<td>微信</td>
+<td>wechat://</td>
+</tr>
+<tr>
+<td>微信-扫一扫</td>
+<td><a href="weixin://dl/scan">weixin://dl/scan</a></td>
+</tr>
+<tr>
+<td>微信-反馈</td>
+<td><a href="weixin://dl/feedback">weixin://dl/feedback</a></td>
+</tr>
+<tr>
+<td>微信-朋友圈</td>
+<td><a href="weixin://dl/moments">weixin://dl/moments</a></td>
+</tr>
+<tr>
+<td>微信-设置</td>
+<td><a href="weixin://dl/settings">weixin://dl/settings</a></td>
+</tr>
+<tr>
+<td>微信-消息通知设置</td>
+<td><a href="weixin://dl/notifications">weixin://dl/notifications</a></td>
+</tr>
+<tr>
+<td>微信-聊天设置</td>
+<td><a href="weixin://dl/chat">weixin://dl/chat</a></td>
+</tr>
+<tr>
+<td>微信-通用设置</td>
+<td><a href="weixin://dl/general">weixin://dl/general</a></td>
+</tr>
+<tr>
+<td>微信-公众号</td>
+<td><a href="weixin://dl/officialaccounts">weixin://dl/officialaccounts</a></td>
+</tr>
+<tr>
+<td>微信-游戏</td>
+<td><a href="weixin://dl/games">weixin://dl/games</a></td>
+</tr>
+<tr>
+<td>微信-帮助</td>
+<td><a href="weixin://dl/help">weixin://dl/help</a></td>
+</tr>
+<tr>
+<td>微信-个人信息</td>
+<td><a href="weixin://dl/profile">weixin://dl/profile</a></td>
+</tr>
+<tr>
+<td>微信-功能插件</td>
+<td><a href="weixin://dl/features">weixin://dl/features</a></td>
+</tr>
+<tr>
+<td>虾米音乐</td>
+<td>xiami://</td>
+</tr>
+<tr>
+<td>chrome</td>
+<td>googlechrome://</td>
+</tr>
+<tr>
+<td>微博国际版</td>
+<td>weibointernational://</td>
+</tr>
+<tr>
+<td>摩拜单车</td>
+<td>mobike://</td>
+</tr>
+<tr>
+<td>ofo</td>
+<td>ofoapp://</td>
+</tr>
+<tr>
+<td>有道云笔记</td>
+<td>youdaonote://</td>
+</tr>
+<tr>
+<td>印象笔记</td>
+<td>evernote://</td>
+</tr>
+<tr>
+<td>今日头条</td>
+<td>snssdk141://</td>
+</tr>
+<tr>
+<td>网易新闻</td>
+<td>newsapp://</td>
+</tr>
+<tr>
+<td>网易云音乐</td>
+<td>orpheuswidget://</td>
+</tr>
+<tr>
+<td>QQ音乐</td>
+<td>qqmusic://</td>
+</tr>
+<tr>
+<td>QQ音乐最近播放</td>
+<td><a href="qqmusic://today?mid=31&k1=2&k4=0">qqmusic://today?mid=31&amp;k1=2&amp;k4=0</a></td>
+</tr>
+<tr>
+<td>美团外卖</td>
+<td>meituanwaimai://</td>
+</tr>
+<tr>
+<td>美团</td>
+<td>imeituan://</td>
+</tr>
+<tr>
+<td>Gmail</td>
+<td>googlegmail://</td>
+</tr>
+<tr>
+<td>网易邮箱</td>
+<td>neteasemail://</td>
+</tr>
+<tr>
+<td>QQ邮箱</td>
+<td>qqmail://</td>
+</tr>
+<tr>
+<td>腾讯视频</td>
+<td>tenvideo://</td>
+</tr>
+<tr>
+<td>爱奇艺</td>
+<td>iqiyi://</td>
+</tr>
+<tr>
+<td>12306</td>
+<td>cn.12306://</td>
+</tr>
+<tr>
+<td>有道词典</td>
+<td>yddict://</td>
+</tr>
+<tr>
+<td>钉钉</td>
+<td>dingtalk://</td>
+</tr>
+</tbody></table>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.jianshu.com/p/500f4be528e3" target="_blank" rel="noopener">H5唤起APP进行分享的尝试</a></p>
+<p><a href="https://blog.csdn.net/xttxqjfg/article/details/76019824" target="_blank" rel="noopener">常用URL Scheme</a></p>
+<p><a href="https://suanmei.github.io/2018/08/23/h5_call_app/" target="_blank" rel="noopener">H5唤起APP指南</a></p>
+]]></content>
+      <categories>
+        <category>H5</category>
+      </categories>
+      <tags>
+        <tag>H5</tag>
       </tags>
   </entry>
   <entry>
