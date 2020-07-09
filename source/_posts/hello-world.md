@@ -1,7 +1,7 @@
 ---
 title: Hello World
 categories: 
-- 入门
+- 测试
 tags:
 - hexo
 top: true
