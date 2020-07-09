@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hexo-themes-butterfly修改记录</title>
+    <url>/2020/04/30/butterfly/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>butterfly</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hello World</title>
     <url>/2020/05/06/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
@@ -20,7 +31,7 @@
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 ]]></content>
       <categories>
-        <category>入门</category>
+        <category>测试</category>
       </categories>
       <tags>
         <tag>hexo</tag>
@@ -249,14 +260,28 @@
       </tags>
   </entry>
   <entry>
-    <title>Hexo-themes-butterfly修改记录</title>
-    <url>/2020/04/30/butterfly/</url>
-    <content><![CDATA[]]></content>
+    <title>git常见报错汇总</title>
+    <url>/2020/07/09/git%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB/</url>
+    <content><![CDATA[<h3 id="1-如果输入git-remote-add-origin-git-github-com-git账号名-git项目名-git提示出错信息：fatal-remote-origin-already-exists"><a href="#1-如果输入git-remote-add-origin-git-github-com-git账号名-git项目名-git提示出错信息：fatal-remote-origin-already-exists" class="headerlink" title="1.如果输入git remote add origin git@github.com:git账号名/git项目名.git提示出错信息：fatal:remote origin already exists"></a>1.如果输入<code>git remote add origin git@github.com:git账号名/git项目名.git</code>提示出错信息：<code>fatal:remote origin already exists</code></h3><p>解决办法如下：</p>
+<ol>
+<li>先输入<code>git remote rm origin</code></li>
+<li>再输入<code>git remote add origin git@github.com:git账号名/git项目名.git</code>就不会报错了</li>
+<li>如果输入<code>git remote rm origin</code> 还是报错的话，<code>error: Could not remove config section &#39;remote.origin&#39;.</code> 我们需要修改<code>gitconfig</code>文件的内容</li>
+</ol>
+<h3 id="2-git-clone时显示Filename-too-long的解决办法"><a href="#2-git-clone时显示Filename-too-long的解决办法" class="headerlink" title="2.git clone时显示Filename too long的解决办法"></a>2.<code>git clone</code>时显示<code>Filename too long</code>的解决办法</h3><p>在<code>git bash</code>中，运行下列命令：<code>git config --global core.longpaths true</code> 就可以解决该问题。<br><code>--global</code>是该参数的使用范围，如果只想对本版本库设置该参数，只要在上述命令中去掉–global即可。</p>
+<h3 id="3-Git操作失败并提示Another-git-process-seems-to-be-running-in-this"><a href="#3-Git操作失败并提示Another-git-process-seems-to-be-running-in-this" class="headerlink" title="3.Git操作失败并提示Another git process seems to be running in this......"></a>3.<code>Git</code>操作失败并提示<code>Another git process seems to be running in this......</code></h3><p>Git操作的过程中突然显示<code>Another git process semms to be running in this repository, e.g. an editor opened by ‘git commit’. Please make sure all processes are terminated then try again. If it still fails, a git process remove the file manually to continue…</code><br>翻译过来就是git被另外一个程序占用，重启机器也不能够解决。<br>原因在于Git在使用过程中遭遇了奔溃，部分被上锁资源没有被释放导致的。<br>解决方案：进入项目文件夹下的 <code>.git</code>文件中（显示隐藏文件夹或<code>rm .git/index.lock</code>）删除<code>index.lock</code>文件即可。</p>
+<h3 id="4-warning-LF-will-be-replaced-by-CRLF-in-解决办法"><a href="#4-warning-LF-will-be-replaced-by-CRLF-in-解决办法" class="headerlink" title="4.warning: LF will be replaced by CRLF in 解决办法"></a>4.<code>warning: LF will be replaced by CRLF in</code> 解决办法</h3><p>原因是存在符号转义问题<br><code>windows</code>中的换行符为 <code>CRLF</code>， 而在<code>linux</code>下的换行符为<code>LF</code>，所以在执行<code>add .</code> 时出现提示，解决办法：<code>git config --global core.autocrlf false</code></p>
+<h3 id="5-git-推送出现-quot-fatal-The-remote-end-hung-up-unexpectedly-quot-解决方案"><a href="#5-git-推送出现-quot-fatal-The-remote-end-hung-up-unexpectedly-quot-解决方案" class="headerlink" title="5.git 推送出现 &quot;fatal: The remote end hung up unexpectedly&quot; 解决方案"></a>5.<code>git</code> 推送出现 <code>&quot;fatal: The remote end hung up unexpectedly&quot;</code> 解决方案</h3><p>在使用git更新或提交项目时候出现<code>&quot;fatal: The remote end hung up unexpectedly &quot;</code> 原因是推送的文件太大。<br>解决方案：<code>git  config  http.postBuffer  524288000</code></p>
+<h3 id="6-Git-error：-hint-Updates-were-rejected-because-the-remote-contains-work-that-you-do-hint-not-have-locally-This-is-usually-caused-b"><a href="#6-Git-error：-hint-Updates-were-rejected-because-the-remote-contains-work-that-you-do-hint-not-have-locally-This-is-usually-caused-b" class="headerlink" title="6.Git error： hint: Updates were rejected because the remote contains work that you do hint: not have locally. This is usually caused b"></a>6.<code>Git error： hint: Updates were rejected because the remote contains work that you do hint: not have locally. This is usually caused b</code></h3><p><img src="/" class="lazyload" data-src="https://lacrimosa-bed.oss-cn-hangzhou.aliyuncs.com/img/6.jpg"  alt=""></p>
+<p>解决办法：<br><code>$ git pull origin master</code><br><code>$ git push origin master</code></p>
+<h3 id="7-git中Please-enter-a-commit-message-to-explain-why-this-merge-is-necessary"><a href="#7-git中Please-enter-a-commit-message-to-explain-why-this-merge-is-necessary" class="headerlink" title="7.git中Please enter a commit message to explain why this merge is necessary."></a>7.<code>git</code>中<code>Please enter a commit message to explain why this merge is necessary.</code></h3><p><img src="/" class="lazyload" data-src="https://lacrimosa-bed.oss-cn-hangzhou.aliyuncs.com/img/7.png"  alt=""></p>
+<p>请输入提交消息来解释为什么这种合并是必要的<br>git 在pull或者合并分支的时候有时会遇到这个界面。可以不管(直接下面3,4步)，如果要输入解释的话就需要:<br>1.按键盘字母<code>i</code>进入<code>insert</code>模式<br>2.修改最上面那行黄色合并信息,可以不修改<br>3.按键盘左上角<code>Esc</code><br>4.输入<code>:wq</code>,注意是冒号+wq,按回车键即可</p>
+]]></content>
       <categories>
-        <category>博客</category>
+        <category>工具</category>
       </categories>
       <tags>
-        <tag>butterfly</tag>
+        <tag>git</tag>
       </tags>
   </entry>
 </search>
